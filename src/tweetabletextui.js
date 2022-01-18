@@ -20,6 +20,7 @@ export default class TweetableTextUI extends Plugin {
       const command = editor.commands.get('tweetableText');
 
       this._setUpDropdown(dropdownView, tweetableTextForm, command, editor);
+      this._setUpForm(dropdownView, tweetableTextForm, command);
 
       return dropdownView;
     });
@@ -38,6 +39,38 @@ export default class TweetableTextUI extends Plugin {
       icon: tweetableTextIcon,
       tooltip: true
     });
+
+    button.on('open', () => {
+      form.disableCssTransitions();
+      form.displayText = command.value.displayText || '';
+      form.tweetableTextVal = command.value.tweetableTextVal || '';
+      // form.urlInputView.fieldView.select();
+      form.focus();
+      form.enableCssTransitions();
+    }, { priority: 'low' });
+
+    dropdown.on('submit', () => {
+      if (form.isValid()) {
+        editor.execute('tweetableText', form.displayText, form.tweetableTextVal);
+        closeUI();
+      }
+    });
+
+    dropdown.on('change:isOpen', () => form.resetFormStatus());
+    dropdown.on('cancel', () => closeUI());
+
+    function closeUI() {
+      editor.editing.view.focus();
+      dropdown.isOpen = false;
+    }
+  }
+
+  _setUpForm(dropdown, form, command) {
+    form.delegate('submit', 'cancel').to(dropdown);
+    form.urlInputView.bind('value').to(command, 'value');
+
+    // Form elements should be read-only when corresponding commands are disabled.
+    form.urlInputView.bind('isReadOnly').to(command, 'isEnabled', value => !value);
   }
 }
 
