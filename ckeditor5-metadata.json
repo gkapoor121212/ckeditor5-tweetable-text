@@ -1,0 +1,23 @@
+{
+	"plugins": [
+		{
+			"name": "Tweetable text",
+			"className": "TweetableText",
+			"description": "Allows a user to insert tweetable text in the editor.",
+			"path": "src/tweetabletext.js",
+			"uiComponents": [
+				{
+					"type": "SplitButton",
+					"name": "tweetableText",
+					"iconPath": "theme/icons/tweetableText.svg"
+				}
+			],
+			"htmlOutput": [
+				{
+					"elements": "span",
+					"classes": "tweetableText"
+				}
+			]
+		}
+	]
+}

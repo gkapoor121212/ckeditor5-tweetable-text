@@ -1,20 +1,34 @@
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+/**
+ * @module tweetable-text
+ */
 
-import TweetableTextEditing from './tweetabletextediting';
-import TweetableTextUI from './tweetabletextui';
+import Plugin from "@ckeditor/ckeditor5-core/src/plugin";
 
+import TweetableTextEditing from "./tweetabletextediting";
+import TweetableTextUI from "./tweetabletextui";
+
+/**
+ * The tweetable text plugin.
+ *
+ * This is a "glue" plugin which loads the following plugins:
+ *
+ * * The {@link module:tweetable-text/tweetabletextediting~TweetableTextEditing tweetable text adding feature} and
+ * * The {@link module:tweetable-text/tweetabletextui~TweetableTextUI tweetable text UI feature}
+ *
+ * @extends module:core/plugin~Plugin
+ */
 export default class TweetableText extends Plugin {
-  /**
+	/**
    * @inheritDoc
    */
-  static get requires() {
-    return [TweetableTextEditing, TweetableTextUI];
-  }
+	static get requires() {
+		return [TweetableTextEditing, TweetableTextUI];
+	}
 
-  /**
+	/**
    * @inheritDoc
    */
-  static get pluginName() {
-    return 'TweetableText';
-  }
+	static get pluginName() {
+		return "TweetableText";
+	}
 }

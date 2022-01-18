@@ -1,0 +1,60 @@
+{
+  "name": "ckeditor5-tweetable-text",
+  "version": "1.0.0",
+  "description": "Allows a user to insert tweetable text in the editor.",
+  "keywords": [
+    "ckeditor",
+    "ckeditor5",
+    "ckeditor 5",
+    "ckeditor5-feature",
+    "ckeditor5-plugin",
+    "ckeditor5-dll"
+  ],
+  "main": "src/index.js",
+  "dependencies": {
+    "@ckeditor/ckeditor5-ui": "^31.1.0",
+    "ckeditor5": "^31.1.0"
+  },
+  "devDependencies": {
+    "@ckeditor/ckeditor5-basic-styles": "^31.1.0",
+    "@ckeditor/ckeditor5-core": "^31.1.0",
+    "@ckeditor/ckeditor5-dev-utils": "^27.1.0",
+    "@ckeditor/ckeditor5-editor-balloon": "^31.1.0",
+    "@ckeditor/ckeditor5-editor-classic": "^31.1.0",
+    "@ckeditor/ckeditor5-engine": "^31.1.0",
+    "@ckeditor/ckeditor5-theme-lark": "^31.1.0",
+    "@ckeditor/ckeditor5-typing": "^31.1.0",
+    "@ckeditor/ckeditor5-undo": "^31.1.0",
+    "@ckeditor/ckeditor5-utils": "^31.1.0",
+    "@ckeditor/ckeditor5-widget": "^31.1.0",
+    "webpack": "^5.58.1",
+    "webpack-cli": "^4.9.0"
+  },
+  "engines": {
+    "node": ">=14.0.0",
+    "npm": ">=5.7.1"
+  },
+  "directories": {
+    "doc": "docs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gkapoor121212/ckeditor5-tweetable-text.git"
+  },
+  "author": "Gaurav Kapoor",
+  "license": "GPL-2.0-or-later",
+  "bugs": {
+    "url": "https://github.com/gkapoor121212/ckeditor5-tweetable-text/issues"
+  },
+  "homepage": "https://github.com/gkapoor121212/ckeditor5-tweetable-text#readme",
+  "files": [
+    "lang",
+    "src",
+    "theme",
+    "dist",
+    "ckeditor5-metadata.json"
+  ],
+  "scripts": {
+    "dll:build": "webpack"
+  }
+}
