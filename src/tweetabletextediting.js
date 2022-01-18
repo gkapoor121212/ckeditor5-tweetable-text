@@ -1,12 +1,10 @@
-// placeholder/placeholderediting.js
-
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import TweetableTextCommand from './tweetabletextcommand';
 import { toWidget, viewToModelPositionOutsideModelElement } from '@ckeditor/ckeditor5-widget/src/utils';
 import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 
-export default class PlaceholderEditing extends Plugin {
+export default class TweetableTextEditing extends Plugin {
   static get requires() {
     return [Widget];
   }
@@ -14,7 +12,7 @@ export default class PlaceholderEditing extends Plugin {
   init() {
     this._defineSchema();
     this._defineConverters();
-    this.editor.commands.add('tweetableText', new PlaceholderCommand(this.editor));
+    this.editor.commands.add('tweetableText', new TweetableTextCommand(this.editor));
     this.editor.editing.mapper.on(
       'viewToModelPosition',
       viewToModelPositionOutsideModelElement(this.editor.model, viewElement => viewElement.hasClass('tweetableText'))
@@ -62,7 +60,7 @@ export default class PlaceholderEditing extends Plugin {
     conversion.for('editingDowncast').elementToElement({
       model: 'tweetableText',
       view: (modelItem, { writer: viewWriter }) => {
-        const widgetElement = createPlaceholderView(modelItem, viewWriter);
+        const widgetElement = createTweetableTextView(modelItem, viewWriter);
 
         // Enable widget handling on a placeholder element inside the editing view.
         return toWidget(widgetElement, viewWriter);
@@ -71,15 +69,15 @@ export default class PlaceholderEditing extends Plugin {
 
     conversion.for('dataDowncast').elementToElement({
       model: 'tweetableText',
-      view: (modelItem, { writer: viewWriter }) => createPlaceholderView(modelItem, viewWriter)
+      view: (modelItem, { writer: viewWriter }) => createTweetableTextView(modelItem, viewWriter)
     });
 
     // Helper method for both downcast converters.
-    function createPlaceholderView(modelItem, viewWriter) {
+    function createTweetableTextView(modelItem, viewWriter) {
       const displayText = modelItem.getAttribute('displayText');
       const tweetableTextVal = modelItem.getAttribute('tweetableTextVal');
 
-      const placeholderView = viewWriter.createContainerElement('span', {
+      const tweetableTextView = viewWriter.createContainerElement('span', {
         class: 'tweetableText'
       }, {
         isAllowedInsideAttributeElement: true
@@ -87,7 +85,7 @@ export default class PlaceholderEditing extends Plugin {
 
       // Insert the placeholder name (as a text).
       const innerText = viewWriter.createText('{' + displayText + tweetableTextVal + '}');
-      viewWriter.insert(viewWriter.createPositionAt(placeholderView, 0), innerText);
+      viewWriter.insert(viewWriter.createPositionAt(tweetableTextView, 0), innerText);
 
       // const linkText = 'Gaurav';
       // const linkUrl = 'https://twitter.com/test';
@@ -95,7 +93,7 @@ export default class PlaceholderEditing extends Plugin {
       // const insertPosition = editor.model.document.selection.getFirstPosition();
       // writer.insertText(linkText, { linkHref: linkUrl }, insertPosition);
 
-      return placeholderView;
+      return tweetableTextView;
     }
   }
 }

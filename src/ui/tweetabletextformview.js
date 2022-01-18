@@ -215,4 +215,26 @@ export default class TweetableTextFormView extends View {
 
     return labeledInput;
   }
+
+  _createButton(label, icon, className, eventName) {
+    const button = new ButtonView(this.locale);
+
+    button.set({
+      label,
+      icon,
+      tooltip: true
+    });
+
+    button.extendTemplate({
+      attributes: {
+        class: className
+      }
+    });
+
+    if (eventName) {
+      button.delegate('execute').to(this, eventName);
+    }
+
+    return button;
+  }
 }

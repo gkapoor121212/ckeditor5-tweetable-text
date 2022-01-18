@@ -1,11 +1,6 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-
-import { createDropdown } from '@ckeditor/ckeditor5/src/ui';
-
-import Collection from '@ckeditor/ckeditor5-utils/src/collection';
-import Model from '@ckeditor/ckeditor5-ui/src/model';
-
-import TweetableTextFormView from './ui/tweetablttextformview';
+import { createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
+import TweetableTextFormView from './ui/tweetabletextformview';
 import tweetableTextIcon from '../theme/icons/tweetableText.svg';
 
 
@@ -42,6 +37,7 @@ export default class TweetableTextUI extends Plugin {
 
     button.on('open', () => {
       form.disableCssTransitions();
+      console.log(command);
       form.displayText = command.value.displayText || '';
       form.tweetableTextVal = command.value.tweetableTextVal || '';
       // form.urlInputView.fieldView.select();
@@ -67,10 +63,10 @@ export default class TweetableTextUI extends Plugin {
 
   _setUpForm(dropdown, form, command) {
     form.delegate('submit', 'cancel').to(dropdown);
-    form.urlInputView.bind('value').to(command, 'value');
+    form.displayTextInputView.bind('value').to(command, 'value');
 
     // Form elements should be read-only when corresponding commands are disabled.
-    form.urlInputView.bind('isReadOnly').to(command, 'isEnabled', value => !value);
+    form.displayTextInputView.bind('isReadOnly').to(command, 'isEnabled', value => !value);
   }
 }
 
