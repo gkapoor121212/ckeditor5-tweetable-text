@@ -1,50 +1,57 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+
 import { createDropdown } from '@ckeditor/ckeditor5/src/ui';
+
+import Collection from '@ckeditor/ckeditor5-utils/src/collection';
+import Model from '@ckeditor/ckeditor5-ui/src/model';
 
 import TweetableTextFormView from './ui/tweetablttextformview';
 import tweetableTextIcon from '../theme/icons/tweetableText.svg';
 
 
 export default class TweetableTextUI extends Plugin {
-
-  /**
-   * @inheritDoc
-   */
-  static get pluginName() {
-    return 'TweetableTextUI';
-  }
-
   init() {
     const editor = this.editor;
-    const command = editor.commands.get('tweetableText');
 
     editor.ui.componentFactory.add('tweetableText', locale => {
-      const view = new ButtonView(locale);
+      const dropdownView = createDropdown(locale);
 
-      view.set({
-        label: 'Insert image',
-        icon: imageIcon,
-        tooltip: true
-      });
+      const tweetableTextForm = new TweetableTextFormView(getFormValidators(editor.t), editor.locale);
+      const command = editor.commands.get('tweetableText');
 
-      // Callback executed once the image is clicked.
-      view.on('execute', () => {
-        const imageUrl = prompt('Image URL');
+      this._setUpDropdown(dropdownView, tweetableTextForm, command, editor);
 
-        editor.model.change(writer => {
-          const imageElement = writer.createElement('imageBlock', {
-            src: imageUrl
-          });
-
-          const linkText = 'Gaurav';
-          const linkUrl = 'https://twitter.com/test';
-
-          const insertPosition = editor.model.document.selection.getFirstPosition();
-          writer.insertText(linkText, { linkHref: linkUrl }, insertPosition);
-        });
-      });
-
-      return view;
+      return dropdownView;
     });
   }
+
+  _setUpDropdown(dropdown, form, command) {
+    const editor = this.editor;
+    const t = editor.t;
+    const button = dropdown.buttonView;
+
+    dropdown.bind('isEnabled').to(command);
+    dropdown.panelView.children.add(form);
+
+    button.set({
+      label: 'Tweetable Text',
+      icon: tweetableTextIcon,
+      tooltip: true
+    });
+  }
+}
+
+function getFormValidators(t) {
+  return [
+    form => {
+      if (!form.displayText.length) {
+        return t('The display text must not be empty.');
+      }
+    },
+    form => {
+      if (!form.tweetableTextVal.length) {
+        return t('The tweetable text must not be empty.');
+      }
+    }
+  ];
 }
