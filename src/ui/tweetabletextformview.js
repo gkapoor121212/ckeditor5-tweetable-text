@@ -11,58 +11,138 @@ import {
 	createLabeledInputText,
 	injectCssTransitionDisabler,
 	submitHandler
-} from "ckeditor5/src/ui";
-import { FocusTracker, KeystrokeHandler } from "ckeditor5/src/utils";
-import { icons } from "ckeditor5/src/core";
+} from 'ckeditor5/src/ui';
+import { FocusTracker, KeystrokeHandler } from 'ckeditor5/src/utils';
+import { icons } from 'ckeditor5/src/core';
 
-import "@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.css";
+import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
 
+/**
+ * The tweetable text form view controller class.
+ *
+ * See {@link module:tweetable-text/ui/tweetabletextformview~TweetableTextFormView}.
+ *
+ * @extends module:ui/view~View
+ */
 export default class TweetableTextFormView extends View {
+	/**
+	 * @param {Array.<Function>} validators Form validators used by {@link #isValid}.
+	 * @param {module:utils/locale~Locale} [locale] The localization services instance.
+	 */
 	constructor(validators, locale) {
 		super(locale);
 
 		const t = locale.t;
 
+		/**
+		 * Tracks information about the DOM focus in the form.
+		 *
+		 * @readonly
+		 * @member {module:utils/focustracker~FocusTracker}
+		 */
 		this.focusTracker = new FocusTracker();
-		this.keystrokes = new KeystrokeHandler();
-		this.set("displayTextInputValue", "");
-		this.set("tweetableTextValInputValue", "");
 
+		/**
+		 * An instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}.
+		 *
+		 * @readonly
+		 * @member {module:utils/keystrokehandler~KeystrokeHandler}
+		 */
+		this.keystrokes = new KeystrokeHandler();
+
+		/**
+		 * The value of the Display text input.
+		 *
+		 * @member {String} #displayTextInputValue
+		 * @observable
+		 */
+		this.set('displayTextInputValue', '');
+
+		/**
+		 * The value of the Tweetable text input.
+		 *
+		 * @member {String} #tweetableTextInputValue
+		 * @observable
+		 */
+		this.set('tweetableTextValInputValue', '');
+
+		/**
+		 * The display text input view.
+		 *
+		 * @member {module:ui/labeledfield/labeledfieldview~LabeledFieldView}
+		 */
 		this.displayTextInputView = this._createDisplayTextInput();
+
+		/**
+		 * The tweetable text input view.
+		 *
+		 * @member {module:ui/labeledfield/labeledfieldview~LabeledFieldView}
+		 */
 		this.tweetableTextValInputView = this._createTweetableTextValInput();
 
-		this.saveButtonView = this._createButton(t("Insert"), icons.check, "ck-button-save");
-		this.saveButtonView.type = "submit";
-		// this.saveButtonView.bind('isEnabled').to(this, 'displayTextInputValue', value => !!value);
+		/**
+		 * The Save button view.
+		 *
+		 * @member {module:ui/button/buttonview~ButtonView}
+		 */
+		this.saveButtonView = this._createButton(t('Insert'), icons.check, 'ck-button-save');
+		this.saveButtonView.type = 'submit';
 
-		this.cancelButtonView = this._createButton(t("Cancel"), icons.cancel, "ck-button-cancel", "cancel");
+		/**
+		 * The Cancel button view.
+		 *
+		 * @member {module:ui/button/buttonview~ButtonView}
+		 */
+		this.cancelButtonView = this._createButton(t('Cancel'), icons.cancel, 'ck-button-cancel', 'cancel');
 
+		/**
+		 * A collection of views that can be focused in the form.
+		 *
+		 * @readonly
+		 * @protected
+		 * @member {module:ui/viewcollection~ViewCollection}
+		 */
 		this._focusables = new ViewCollection();
 
+		/**
+		 * Helps cycling over {@link #_focusables} in the form.
+		 *
+		 * @readonly
+		 * @protected
+		 * @member {module:ui/focuscycler~FocusCycler}
+		 */
 		this._focusCycler = new FocusCycler({
 			focusables: this._focusables,
 			focusTracker: this.focusTracker,
 			keystrokeHandler: this.keystrokes,
 			actions: {
 				// Navigate form fields backwards using the <kbd>Shift</kbd> + <kbd>Tab</kbd> keystroke.
-				focusPrevious: "shift + tab",
+				focusPrevious: 'shift + tab',
 
 				// Navigate form fields forwards using the <kbd>Tab</kbd> key.
-				focusNext: "tab"
+				focusNext: 'tab'
 			}
 		});
 
+		/**
+		 * An array of form validators used by {@link #isValid}.
+		 *
+		 * @readonly
+		 * @protected
+		 * @member {Array.<Function>}
+		 */
 		this._validators = validators;
+
 		this.setTemplate({
-			tag: "form",
+			tag: 'form',
 
 			attributes: {
 				class: [
-					"ck",
-					"ck-responsive-form"
+					'ck',
+					'ck-responsive-form'
 				],
 
-				tabindex: "-1"
+				tabindex: '-1'
 			},
 
 			children: [
@@ -77,8 +157,8 @@ export default class TweetableTextFormView extends View {
 	}
 
 	/**
-   * @inheritDoc
-   */
+    * @inheritDoc
+    */
 	render() {
 		super.render();
 
@@ -106,25 +186,16 @@ export default class TweetableTextFormView extends View {
 
 		const stopPropagation = data => data.stopPropagation();
 
-		// Since the form is in the dropdown panel which is a child of the toolbar, the toolbar's
-		// keystroke handler would take over the key management in the URL input. We need to prevent
-		// this ASAP. Otherwise, the basic caret movement using the arrow keys will be impossible.
-		this.keystrokes.set("arrowright", stopPropagation);
-		this.keystrokes.set("arrowleft", stopPropagation);
-		this.keystrokes.set("arrowup", stopPropagation);
-		this.keystrokes.set("arrowdown", stopPropagation);
+		this.keystrokes.set('arrowright', stopPropagation);
+		this.keystrokes.set('arrowleft', stopPropagation);
+		this.keystrokes.set('arrowup', stopPropagation);
+		this.keystrokes.set('arrowdown', stopPropagation);
 
-		// Intercept the `selectstart` event, which is blocked by default because of the default behavior
-		// of the DropdownView#panelView.
-		// TODO: blocking `selectstart` in the #panelView should be configurable per–drop–down instance.
-		// this.listenTo(this.urlInputView.element, 'selectstart', (evt, domEvt) => {
-		//   domEvt.stopPropagation();
-		// }, { priority: 'high' });
 	}
 
 	/**
-   * @inheritDoc
-   */
+    * @inheritDoc
+    */
 	destroy() {
 		super.destroy();
 
@@ -132,10 +203,18 @@ export default class TweetableTextFormView extends View {
 		this.keystrokes.destroy();
 	}
 
+	/**
+	 * Focuses the fist {@link #_focusables} in the form.
+	 */
 	focus() {
 		this._focusCycler.focusFirst();
 	}
 
+	/**
+	 * The native DOM `value` of the {@link #displayTextInputView} element.
+	 *
+	 * @type {String}
+	 */
 	get displayText() {
 		return this.displayTextInputView.fieldView.element.value.trim();
 	}
@@ -144,6 +223,11 @@ export default class TweetableTextFormView extends View {
 		this.displayTextInputView.fieldView.element.value = displayText.trim();
 	}
 
+	/**
+	 * The native DOM `value` of the {@link #tweetableTextValInputView} element.
+	 *
+	 * @type {String}
+	 */
 	get tweetableTextVal() {
 		return this.tweetableTextValInputView.fieldView.element.value.trim();
 	}
@@ -152,6 +236,11 @@ export default class TweetableTextFormView extends View {
 		this.tweetableTextValInputView.fieldView.element.value = tweetableTextVal.trim();
 	}
 
+	/**
+	 * Validates the form and returns `false` when some fields are invalid.
+	 *
+	 * @returns {Boolean}
+	 */
 	isValid() {
 		this.resetFormStatus();
 
@@ -170,6 +259,13 @@ export default class TweetableTextFormView extends View {
 		return true;
 	}
 
+	/**
+	 * Cleans up the supplementary error and information text of the {@link #displayTextInputView}
+	 * and {@link #tweetableTextValInputView} bringing them back to the state when the form has
+	 * been displayed for the first time.
+	 *
+	 * See {@link #isValid}.
+	 */
 	resetFormStatus() {
 		this.displayTextInputView.errorText = null;
 		this.displayTextInputView.infoText = this._displayTextInputViewInfoDefault;
@@ -178,19 +274,25 @@ export default class TweetableTextFormView extends View {
 		this.tweetableTextValInputView.infoText = this._tweetableTextValInputViewInfoDefault;
 	}
 
+	/**
+	 * Creates a labeled input view.
+	 *
+	 * @private
+	 * @returns {module:ui/labeledfield/labeledfieldview~LabeledFieldView} Labeled input view instance.
+	 */
 	_createDisplayTextInput() {
 		const t = this.locale.t;
 
 		const labeledInput = new LabeledFieldView(this.locale, createLabeledInputText);
 		const inputField = labeledInput.fieldView;
 
-		this._displayTextInputViewInfoDefault = t("Add display text.");
-		this._displayTextInputViewInfoTip = t("Tip: this text will be shown to user as it is.");
+		this._displayTextInputViewInfoDefault = t('Add display text.');
+		this._displayTextInputViewInfoTip = t('Tip: this text will be shown to user as it is.');
 
-		labeledInput.label = t("Display Text");
+		labeledInput.label = t('Display Text');
 		labeledInput.infoText = this._displayTextInputViewInfoDefault;
 
-		inputField.on("input", () => {
+		inputField.on('input', () => {
 			// Display the tip text only when there is some value. Otherwise fall back to the default info text.
 			labeledInput.infoText = inputField.element.value ? this._displayTextInputViewInfoTip : this._displayTextInputViewInfoDefault;
 			this.displayTextInputValue = inputField.element.value.trim();
@@ -199,19 +301,25 @@ export default class TweetableTextFormView extends View {
 		return labeledInput;
 	}
 
+	/**
+	 * Creates a labeled input view.
+	 *
+	 * @private
+	 * @returns {module:ui/labeledfield/labeledfieldview~LabeledFieldView} Labeled input view instance.
+	 */
 	_createTweetableTextValInput() {
 		const t = this.locale.t;
 
 		const labeledInput = new LabeledFieldView(this.locale, createLabeledInputText);
 		const inputField = labeledInput.fieldView;
 
-		this._tweetableTextValInputViewInfoDefault = t("Add tweetable text.");
-		this._tweetableTextValInputViewInfoTip = t("Tip: this text will be tweeted.");
+		this._tweetableTextValInputViewInfoDefault = t('Add tweetable text.');
+		this._tweetableTextValInputViewInfoTip = t('Tip: this text will be tweeted.');
 
-		labeledInput.label = t("Tweetable Text");
+		labeledInput.label = t('Tweetable Text');
 		labeledInput.infoText = this._tweetableTextValInputViewInfoDefault;
 
-		inputField.on("input", () => {
+		inputField.on('input', () => {
 			// Display the tip text only when there is some value. Otherwise fall back to the default info text.
 			labeledInput.infoText = inputField.element.value ? this._tweetableTextValInputViewInfoTip : this._tweetableTextValInputViewInfoDefault;
 			this.tweetableTextValInputValue = inputField.element.value.trim();
@@ -220,6 +328,16 @@ export default class TweetableTextFormView extends View {
 		return labeledInput;
 	}
 
+	/**
+	 * Creates a button view.
+	 *
+	 * @private
+	 * @param {String} label The button label.
+	 * @param {String} icon The button icon.
+	 * @param {String} className The additional button CSS class name.
+	 * @param {String} [eventName] An event name that the `ButtonView#execute` event will be delegated to.
+	 * @returns {module:ui/button/buttonview~ButtonView} The button view instance.
+	 */
 	_createButton(label, icon, className, eventName) {
 		const button = new ButtonView(this.locale);
 
@@ -236,7 +354,7 @@ export default class TweetableTextFormView extends View {
 		});
 
 		if (eventName) {
-			button.delegate("execute").to(this, eventName);
+			button.delegate('execute').to(this, eventName);
 		}
 
 		return button;

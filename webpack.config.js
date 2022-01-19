@@ -1,41 +1,41 @@
 // webpack.config.js
 
-"use strict";
+'use strict';
 
-const path = require("path");
-const { styles } = require("@ckeditor/ckeditor5-dev-utils");
+const path = require('path');
+const { styles } = require('@ckeditor/ckeditor5-dev-utils');
 
 module.exports = {
-	entry: ".src/index.js",
+	entry: '.src/index.js',
 
 	output: {
-		path: path.resolve(__dirname, "dist"),
-		filename: "bundle.js"
+		path: path.resolve(__dirname, 'dist'),
+		filename: 'bundle.js'
 	},
 
 	module: {
 		rules: [
 			{
 				test: /theme[/\\]icons[/\\][^/\\]+\.svg$/,
-				use: ["raw-loader"]
+				use: [ 'raw-loader' ]
 			},
 			{
 				test: /theme[/\\].+\.css$/,
 				use: [
 					{
-						loader: "style-loader",
+						loader: 'style-loader',
 						options: {
-							injectType: "singletonStyleTag",
+							injectType: 'singletonStyleTag',
 							attributes: {
-								"data-cke": true
+								'data-cke': true
 							}
 						}
 					},
 					{
-						loader: "postcss-loader",
+						loader: 'postcss-loader',
 						options: styles.getPostCssConfig({
 							themeImporter: {
-								themePath: require.resolve("@ckeditor/ckeditor5-theme-lark")
+								themePath: require.resolve('@ckeditor/ckeditor5-theme-lark')
 							},
 							minify: true
 						})
@@ -46,7 +46,7 @@ module.exports = {
 	},
 
 	// Useful for debugging.
-	devtool: "source-map",
+	devtool: 'source-map',
 
 	// By default webpack logs warnings if the bundle is bigger than 200kb.
 	performance: { hints: false }

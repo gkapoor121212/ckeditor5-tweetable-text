@@ -2,10 +2,10 @@
  * @module tweetable-text
  */
 
-import Plugin from "@ckeditor/ckeditor5-core/src/plugin";
+import { Plugin } from 'ckeditor5/src/core';
 
-import TweetableTextEditing from "./tweetabletextediting";
-import TweetableTextUI from "./tweetabletextui";
+import TweetableTextEditing from './tweetabletextediting';
+import TweetableTextUI from './tweetabletextui';
 
 /**
  * The tweetable text plugin.
@@ -19,16 +19,16 @@ import TweetableTextUI from "./tweetabletextui";
  */
 export default class TweetableText extends Plugin {
 	/**
-   * @inheritDoc
-   */
+     * @inheritDoc
+     */
 	static get requires() {
-		return [TweetableTextEditing, TweetableTextUI];
+		return [ TweetableTextEditing, TweetableTextUI ];
 	}
 
 	/**
-   * @inheritDoc
-   */
+     * @inheritDoc
+     */
 	static get pluginName() {
-		return "TweetableText";
+		return 'TweetableText';
 	}
 }
