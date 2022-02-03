@@ -86,19 +86,25 @@ export default class TweetableTextEditing extends Plugin {
 			const displayText = modelItem.getAttribute('displayText');
 			const tweetableTextVal = modelItem.getAttribute('tweetableTextVal');
 
+			// Logic to convert input into a tweetable text.
+			const twitterBaseUrl = 'https://twitter.com/intent/tweet?';
+			const encodedValue = encodeURI( tweetableTextVal );
+			const linkUrl = twitterBaseUrl + 'text=' + encodedValue;
+
+			// Generate link element for the required Twitter link.
+			const linkElement = viewWriter.createAttributeElement( 'a', { href:linkUrl }, { priority: 5 } );
+
+			// Generate a wrapping span element around tweetable text.
+			viewWriter.insert(linkElement);
 			const tweetableTextView = viewWriter.createContainerElement('span', {
 				class: 'tweetableText'
 			}, {
 				isAllowedInsideAttributeElement: true
 			});
 
-			// Logic to convert input into a tweetable text.
-			const twitterBaseUrl = 'http://twitter.com/intent/tweet?';
-			const encodedValue = encodeURI( tweetableTextVal );
-			const linkUrl = twitterBaseUrl + 'text=' + encodedValue;
-
-			const innerText = viewWriter.createText(displayText, { linkHref: linkUrl });
-			viewWriter.insert(viewWriter.createPositionAt(tweetableTextView, 0), innerText);
+			// Generate display text and insert it in the view.
+			const innerText = viewWriter.createText(displayText);
+			viewWriter.insert(viewWriter.createPositionAt( tweetableTextView, 0), innerText);
 
 			return tweetableTextView;
 		}
